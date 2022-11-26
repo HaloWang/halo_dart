@@ -46,7 +46,7 @@ extension HaloList<T> on List<T> {
   }
 }
 
-extension HLMap<K, V> on Map<K, V> {
+extension HaloMap<K, V> on Map<K, V> {
   List<V> get v => values.toList();
   List<K> get k => keys.toList();
 
@@ -92,13 +92,13 @@ extension HLInt on int {
   }
 }
 
-extension HLBool on bool {
+extension HaloBool on bool {
   int get toInt {
     return this ? 1 : 0;
   }
 }
 
-extension HLString on String {
+extension HaloString on String {
   int get toInt {
     return int.parse(this);
   }
@@ -111,6 +111,46 @@ extension HLString on String {
       breakWord += '\u200B';
     }
     return breakWord;
+  }
+
+  List<String> splitWithDelimiter(
+    RegExp pattern, {
+    bool combine = true,
+  }) {
+    final rawMatches = pattern.allMatchesWithSep(this);
+    final List<String> result = [];
+    // assert(result.length % 2 != 0);
+    // for (var i = 0; i < result.length; i++) {}
+    final headMatchDelim = rawMatches.length % 2 == 0;
+    if (rawMatches.isEmpty) return [];
+    assert(rawMatches.length >= 2);
+    for (var i = 0; i < rawMatches.length; i++) {
+      if (headMatchDelim) {
+        if (i % 2 == 0) {
+          result.add(rawMatches[i] + rawMatches[i + 1]);
+        }
+      } else {
+        if (i == 0) {
+          result.add(rawMatches[i]);
+        } else if (i % 2 == 0) {
+          result.add(rawMatches[i - 1] + rawMatches[i]);
+        }
+      }
+    }
+    return result;
+  }
+}
+
+extension HaloRegExp on RegExp {
+  List<String> allMatchesWithSep(String input, [int start = 0]) {
+    var result = <String>[];
+    for (var match in allMatches(input, start)) {
+      result.add(input.substring(start, match.start));
+      result.add(match[0]!);
+      start = match.end;
+    }
+    result.add(input.substring(start));
+    return result;
   }
 }
 
