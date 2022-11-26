@@ -1,0 +1,140 @@
+library halo_dart;
+
+import 'dart:async';
+import "dart:math";
+
+var kLoremIpsum =
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+
+extension HLList<T> on List<T> {
+  List<R> indexMap<R>(
+    R Function(int index, T value) convert, {
+    bool growable = false,
+  }) {
+    final result = asMap()
+        .map((index, value) => MapEntry(
+              index,
+              convert(index, value),
+            ))
+        .values
+        .toList(
+          growable: growable,
+        );
+    return result;
+  }
+
+  List<R> m<R>(
+    R Function(T value) convert, {
+    bool growable = false,
+  }) {
+    final result = asMap()
+        .map((index, value) => MapEntry(
+              index,
+              convert(value),
+            ))
+        .values
+        .toList(growable: growable);
+    return result;
+  }
+}
+
+extension HLMap<K, V> on Map<K, V> {
+  List<V> get v => values.toList();
+  List<K> get k => keys.toList();
+
+  List<R> indexMap<R>(
+    R Function(K key, V value) convert, {
+    bool growable = false,
+  }) {
+    final result = map((key, value) => MapEntry(
+              key,
+              convert(key, value),
+            )).values.toList(
+          growable: growable,
+        );
+    return result;
+  }
+
+  Map<String, String> get allString {
+    final Map<String, String> result = {};
+    forEach((key, value) {
+      final k = key.toString();
+      final v = value.toString();
+      result[k] = v;
+    });
+    return result;
+  }
+
+  Map<K, V> get withoutNull {
+    Map<K, V> result = {};
+
+    for (var key in keys) {
+      if (this[key] != null) {
+        result[key] = this[key] as V;
+      }
+    }
+
+    return result;
+  }
+}
+
+extension HLInt on int {
+  Duration get ms {
+    return Duration(milliseconds: this);
+  }
+}
+
+extension HLBool on bool {
+  int get toInt {
+    return this ? 1 : 0;
+  }
+}
+
+extension HLString on String {
+  int get toInt {
+    return int.parse(this);
+  }
+
+  // Use Extension
+  String get breakWord {
+    String breakWord = '';
+    for (var element in runes) {
+      breakWord += String.fromCharCode(element);
+      breakWord += '\u200B';
+    }
+    return breakWord;
+  }
+}
+
+Future<void> after(Duration duration, void Function() task) {
+  return Future.delayed(duration, task);
+}
+
+Future<void> last(void Function()? task) {
+  return Future.delayed(0.ms, task);
+}
+
+List<T> gen<T>({
+  required int times,
+  required T Function(int time) generator,
+}) {
+  List<T> list = [];
+  for (var i = 0; i < times; i++) {
+    list.add(generator(i));
+  }
+  return list;
+}
+
+final _rnd = Random();
+const _chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+
+int randomNumber(int length) {
+  var next = _rnd.nextDouble() * pow(10, length);
+  while (next < pow(10, length - 1)) {
+    next *= 10;
+  }
+  return next.toInt();
+}
+
+String randomString(int length) => String.fromCharCodes(Iterable.generate(
+    length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
