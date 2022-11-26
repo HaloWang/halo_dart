@@ -6,32 +6,36 @@ import "dart:math";
 var kLoremIpsum =
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
 
-extension HLList<T> on List<T> {
+extension HaloList<T> on List<T> {
+  /// [dart growable performance](https://stackoverflow.com/questions/15943890/is-there-a-performance-benefit-in-using-fixed-length-lists-in-dart)
   List<R> indexMap<R>(
     R Function(int index, T value) convert, {
     bool growable = false,
   }) {
     final result = asMap()
-        .map((index, value) => MapEntry(
-              index,
-              convert(index, value),
-            ))
+        .map((index, value) {
+          return MapEntry(
+            index,
+            convert(index, value),
+          );
+        })
         .values
-        .toList(
-          growable: growable,
-        );
+        .toList(growable: growable);
     return result;
   }
 
+  /// [dart growable performance](https://stackoverflow.com/questions/15943890/is-there-a-performance-benefit-in-using-fixed-length-lists-in-dart)
   List<R> m<R>(
     R Function(T value) convert, {
     bool growable = false,
   }) {
     final result = asMap()
-        .map((index, value) => MapEntry(
-              index,
-              convert(value),
-            ))
+        .map((index, value) {
+          return MapEntry(
+            index,
+            convert(value),
+          );
+        })
         .values
         .toList(growable: growable);
     return result;
@@ -46,12 +50,12 @@ extension HLMap<K, V> on Map<K, V> {
     R Function(K key, V value) convert, {
     bool growable = false,
   }) {
-    final result = map((key, value) => MapEntry(
-              key,
-              convert(key, value),
-            )).values.toList(
-          growable: growable,
-        );
+    final result = map((key, value) {
+      return MapEntry(
+        key,
+        convert(key, value),
+      );
+    }).values.toList(growable: growable);
     return result;
   }
 
