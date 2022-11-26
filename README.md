@@ -15,4 +15,4 @@ Personal dart tools
 
 ## Features
 
-Add serveral extensions and function for my dart developing.
+Add serveral extensions and function for my dart development.
