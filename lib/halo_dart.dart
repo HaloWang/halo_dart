@@ -108,46 +108,6 @@ extension HaloString on String {
     }
     return breakWord;
   }
-
-  List<String> splitWithDelimiter(
-    RegExp pattern, {
-    bool combine = true,
-  }) {
-    final rawMatches = pattern.allMatchesWithSep(this);
-    final List<String> result = [];
-    // assert(result.length % 2 != 0);
-    // for (var i = 0; i < result.length; i++) {}
-    final headMatchDelim = rawMatches.length % 2 == 0;
-    if (rawMatches.isEmpty) return [];
-    assert(rawMatches.length >= 2);
-    for (var i = 0; i < rawMatches.length; i++) {
-      if (headMatchDelim) {
-        if (i % 2 == 0) {
-          result.add(rawMatches[i] + rawMatches[i + 1]);
-        }
-      } else {
-        if (i == 0) {
-          result.add(rawMatches[i]);
-        } else if (i % 2 == 0) {
-          result.add(rawMatches[i - 1] + rawMatches[i]);
-        }
-      }
-    }
-    return result;
-  }
-}
-
-extension HaloRegExp on RegExp {
-  List<String> allMatchesWithSep(String input, [int start = 0]) {
-    var result = <String>[];
-    for (var match in allMatches(input, start)) {
-      result.add(input.substring(start, match.start));
-      result.add(match[0]!);
-      start = match.end;
-    }
-    result.add(input.substring(start));
-    return result;
-  }
 }
 
 Future<void> after(Duration duration, void Function() task) {
